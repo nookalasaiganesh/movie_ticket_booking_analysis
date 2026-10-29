@@ -1,0 +1,42 @@
+MOVIE TICKET BOOKING & REVENUE ANALYSIS
+Simple running notes.
+
+
+13. What are indexes?
+An index is like the index at the back of a book. It helps MySQL find matching
+rows faster. This project indexes movie titles, theatre cities, show dates,
+booking status/date and payment status. Indexes can speed up searches, but too
+many indexes can make inserts and updates slower.
+
+14. What is a stored procedure?
+A stored procedure is a saved group of SQL statements that you can run by name.
+This project includes:
+- CALL sp_movie_revenue(NULL); shows revenue for all movies.
+- CALL sp_movie_revenue(1); shows revenue for movie ID 1.
+- CALL sp_show_occupancy(); shows seat occupancy for each showtime.
+- CALL sp_cancel_booking(1); cancels booking ID 1 and records its status change.
+Only run the cancellation example if you want to change sample data.
+
+15. What is a trigger?
+A trigger runs automatically when a table gets an INSERT or UPDATE.
+This project includes:
+- trg_validate_booking_before_insert: checks that the seat belongs to the
+  screen used by the show and blocks bookings for cancelled shows.
+- trg_validate_payment_before_insert: checks that the payment amount matches
+  the ticket price and blocks successful payments for cancelled bookings.
+- trg_booking_status_after_update: saves status changes into
+  booking_status_history so you can see the old and new status.
+
+16. How to test procedures and triggers
+1. Run the complete SQL file once.
+2. Try CALL sp_movie_revenue(NULL);
+3. Try CALL sp_show_occupancy();
+4. Run SELECT * FROM booking_status_history; (may initially be empty).
+5. Update one booking status, for example:
+   UPDATE bookings SET booking_status = 'Cancelled' WHERE booking_id = 2;
+6. Run SELECT * FROM booking_status_history; to see the recorded change.
+7. Use SHOW TRIGGERS; and SHOW PROCEDURE STATUS WHERE Db='movie_ticket_booking';
+
+Important: triggers are safeguards. If a test update or procedure changes a
+booking, the data remains changed until you manually change it back or rerun
+this project script. Rerunning the script recreates the project database.
